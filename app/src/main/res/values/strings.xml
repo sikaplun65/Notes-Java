@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">ProjectThree</string>
-    <string name="lable_toolbar">Заметки</string>
+    <string name="label_toolbar">Заметки</string>
     <string name="text_hint_title_edit_text">Заголовок</string>
     <string name="text_hint_detail_edit_text">текст зметки...</string>
+    <string name="text_save_button">готово</string>
+    <string name="text_text_view">Заметки</string>
 </resources>
