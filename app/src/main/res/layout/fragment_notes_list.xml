@@ -10,6 +10,8 @@
         android:id="@+id/menu_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         android:background="#DADADA"
         android:orientation="horizontal"
         tools:ignore="MissingConstraints">
@@ -18,8 +20,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/text_text_view"
-            android:textSize="@dimen/twenty_eight_sp"
-            android:layout_marginStart="@dimen/eight_dp"/>
+            android:textSize="28sp"
+            android:layout_marginStart="8dp"/>
 
         <ImageButton
             android:id="@+id/new_note_button"
@@ -34,8 +36,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/menu_linear_layout" />
+        app:layout_constraintTop_toBottomOf="@+id/menu_linear_layout"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

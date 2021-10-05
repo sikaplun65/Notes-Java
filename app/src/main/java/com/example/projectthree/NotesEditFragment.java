@@ -13,6 +13,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.projectthree.domain.NoteEntity;
@@ -23,8 +24,11 @@ public class NotesEditFragment extends Fragment {
     private static final String ID_KEY = "ID_KEY";
     private EditText titleEditText;
     private EditText detailEditText;
+    Button saveButton;
     private NotesList notesList;
     private String noteId;
+    private String tempTitle;
+    private String tempDetail;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -35,65 +39,102 @@ public class NotesEditFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        notesList = NotesListImpl.getList();
-        Bundle args = getArguments();
-        assert args != null;
-        noteId = args.getString(ID_KEY);
-
-        setTextTitle(view,notesList.getNote(noteId));
-        setTextDetail(view,notesList.getNote(noteId));
-        editingAndSaveNote(view);
-    }
-
-
-    private void setTextTitle(View view, NoteEntity note) {
+        tempTitle = "";
+        tempDetail = "";
         titleEditText = view.findViewById(R.id.title_edit_text);
-        titleEditText.setText(note.getTitle());
+        detailEditText = view.findViewById(R.id.detail_edit_text);
+        saveButton = view.findViewById(R.id.save_button);
+        notesList = NotesListImpl.getList();
+
+        Bundle args = getArguments();
+        if (args != null && args.containsKey(ID_KEY)) {
+            noteId = args.getString(ID_KEY);
+            fillTextTitleAndTextDetail(notesList.getNote(noteId));
+        }
+        setupListeners();
     }
 
-    private void setTextDetail(View view, NoteEntity note) {
-        detailEditText = view.findViewById(R.id.detail_edit_text);
+    private void fillTextTitleAndTextDetail(NoteEntity note) {
+        titleEditText.setText(note.getTitle());
         detailEditText.setText(note.getDetail());
     }
 
-    private void editingAndSaveNote(View view) {
-        view.findViewById(R.id.save_button).setOnClickListener(v->{
+    private void setupListeners() {
 
-            notesList.getNote(noteId).setTitle(titleEditText.getText().toString());
-            notesList.getNote(noteId).setDetail(detailEditText.getText().toString());
+        setHints();
 
-            titleEditText.addTextChangedListener(new TextWatcher() {
-                public void afterTextChanged(Editable s) {}
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        titleEditText.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+            }
 
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    notesList.getNote(noteId).setTitle(titleEditText.getText().toString());
-                }
-            });
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
-            detailEditText.addTextChangedListener(new TextWatcher() {
-                public void afterTextChanged(Editable s) {}
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                tempTitle = titleEditText.getText().toString();
+            }
+        });
 
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    notesList.getNote(noteId).setTitle(detailEditText.getText().toString());
-                }
-            });
+        detailEditText.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+            }
 
-            if(titleEditText.length() == 0 && detailEditText.length() != 0){
-                notesList.getNote(noteId).setTitle(detailEditText.getText().toString().substring(0,10));
-            } else if(titleEditText.length() == 0 && detailEditText.length() == 0){
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                tempDetail = detailEditText.getText().toString();
+            }
+        });
+
+        saveButton.setOnClickListener(v -> {
+            if (noteId == null) {
+                createNote();
+            }else if (tempTitle.length() != 0) {
+                notesList.getNote(noteId).setTitle(tempTitle);
+            }else if (tempDetail.length() != 0) {
+                notesList.getNote(noteId).setDetail(tempDetail);
+            }
+
+            if (titleEditText.length() == 0 && detailEditText.length() != 0) {
+                notesList.getNote(noteId).setTitle(detailEditText.getText().toString().substring(0, 10));
+            } else if (isNoteBlank()) {
                 notesList.removeNote(notesList.getNote(noteId));
             }
             requireActivity().onBackPressed();
         });
     }
 
-    public static NotesEditFragment getNoteId(String id){
+    private void createNote() {
+        NoteEntity newNote = new NoteEntity();
+        notesList.addNote(newNote);
+        noteId = newNote.getId();
+    }
+
+    public static NotesEditFragment create(String id) {
         NotesEditFragment fragment = new NotesEditFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(ID_KEY,id);
+        bundle.putString(ID_KEY, id);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    public static NotesEditFragment create() {
+        return new NotesEditFragment();
+    }
+
+    public boolean isNoteBlank() {
+        return titleEditText.length() == 0 && detailEditText.length() == 0;
+    }
+
+    public void setHints() {
+
+        if (titleEditText.getText().toString().length() == 0) {
+            titleEditText.setHint("Заголовок");
+        }
+        if (detailEditText.getText().toString().length() == 0) {
+            detailEditText.setHint("текст заметки");
+        }
+
     }
 }

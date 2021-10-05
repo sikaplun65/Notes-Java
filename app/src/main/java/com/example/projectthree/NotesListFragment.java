@@ -11,14 +11,17 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.example.projectthree.domain.NoteEntity;
 import com.example.projectthree.domain.NotesList;
 import com.example.projectthree.domain.NotesListImpl;
-
 
 public class NotesListFragment extends Fragment {
     private Controller controller;
@@ -32,7 +35,7 @@ public class NotesListFragment extends Fragment {
         if (context instanceof Controller) {
             controller = (Controller) context;
         } else {
-            throw new IllegalStateException("Activity must implement NotesListFragment.Controller");
+            throw new IllegalStateException("must implement NotesListFragment.Controller");
         }
     }
 
@@ -54,9 +57,7 @@ public class NotesListFragment extends Fragment {
 
     private void initializationAddNewNoteButton(View view) {
         view.findViewById(R.id.new_note_button).setOnClickListener(v ->{
-            NoteEntity newNote = new NoteEntity();
-            notesList.addNote(newNote);
-            controller.startNotesEditFragment(newNote.getId());
+            controller.startNotesCreateFragment();
         });
     }
 
@@ -69,7 +70,8 @@ public class NotesListFragment extends Fragment {
     }
 
     private void onItemClick(NoteEntity note) {
-        controller.startNotesEditFragment(note.getId());
+        id = note.getId();
+        controller.startNotesEditFragment(id);
     }
 
     @Override
@@ -79,6 +81,7 @@ public class NotesListFragment extends Fragment {
     }
 
     interface Controller {
+        void startNotesCreateFragment();
         void startNotesEditFragment(String id);
     }
 }
