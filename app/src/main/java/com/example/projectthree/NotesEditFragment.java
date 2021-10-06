@@ -90,9 +90,11 @@ public class NotesEditFragment extends Fragment {
         saveButton.setOnClickListener(v -> {
             if (noteId == null) {
                 createNote();
-            }else if (tempTitle.length() != 0) {
+            }
+            if (tempTitle.length() != 0) {
                 notesList.getNote(noteId).setTitle(tempTitle);
-            }else if (tempDetail.length() != 0) {
+            }
+            if (tempDetail.length() != 0) {
                 notesList.getNote(noteId).setDetail(tempDetail);
             }
 
