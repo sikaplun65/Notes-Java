@@ -90,9 +90,11 @@ public class NotesEditFragment extends Fragment {
         saveButton.setOnClickListener(v -> {
             if (noteId == null) {
                 createNote();
-            }else if (tempTitle.length() != 0) {
+            }
+            if (tempTitle.length() != 0) {
                 notesList.getNote(noteId).setTitle(tempTitle);
-            }else if (tempDetail.length() != 0) {
+            }
+            if (tempDetail.length() != 0) {
                 notesList.getNote(noteId).setDetail(tempDetail);
             }
 
@@ -104,6 +106,7 @@ public class NotesEditFragment extends Fragment {
             requireActivity().onBackPressed();
         });
     }
+
 
     private void createNote() {
         NoteEntity newNote = new NoteEntity();
@@ -128,13 +131,13 @@ public class NotesEditFragment extends Fragment {
     }
 
     public void setHints() {
-
         if (titleEditText.getText().toString().length() == 0) {
             titleEditText.setHint("Заголовок");
         }
         if (detailEditText.getText().toString().length() == 0) {
             detailEditText.setHint("текст заметки");
         }
-
     }
+
+
 }
