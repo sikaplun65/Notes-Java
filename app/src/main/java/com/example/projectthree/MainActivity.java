@@ -16,14 +16,17 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initNotesListFragment(savedInstanceState);
+        initBottomNavigationMenu();
+    }
+
+    private void initNotesListFragment(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.fragment_container, new NotesListFragment(), "NOTES_LIST_FRAGMENT")
                     .commit();
         }
-
-        initBottomNavigationMenu();
     }
 
     private void addFragment(Fragment f) {
@@ -45,26 +48,25 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
 
     @SuppressLint("NonConstantResourceId")
     private void initBottomNavigationMenu() {
-
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.folder_nav_menu:
-                    Fragment filesFragment = getSupportFragmentManager().findFragmentByTag("FILES_FRAGMENT");
+                    Fragment filesFragment = getSupportFragmentManager().findFragmentByTag("files_fragment");
                     if(filesFragment == null){
                         getSupportFragmentManager()
                                 .beginTransaction()
-                                .replace(R.id.fragment_container, new FilesFragment(),"FILES_FRAGMENT")
+                                .replace(R.id.fragment_container, new FilesFragment(),"files_fragment")
                                 .addToBackStack(null)
                                 .commit();
                     }
                     return true;
                 case R.id.settings_nav_menu:
-                    Fragment settingsFragment = getSupportFragmentManager().findFragmentByTag("SETTINGS_FRAGMENT");
+                    Fragment settingsFragment = getSupportFragmentManager().findFragmentByTag("setting_fragment");
                     if(settingsFragment == null){
                         getSupportFragmentManager()
                                 .beginTransaction()
-                                .replace(R.id.fragment_container, new SettingsFragment(),"SETTINGS_FRAGMENT")
+                                .replace(R.id.fragment_container, new SettingsFragment(),"setting_fragment")
                                 .addToBackStack(null)
                                 .commit();
                     }

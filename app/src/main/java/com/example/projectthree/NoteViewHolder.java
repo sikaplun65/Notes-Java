@@ -17,14 +17,14 @@ public class NoteViewHolder extends RecyclerView.ViewHolder {
     private final TextView detailTextView = itemView.findViewById(R.id.detail_text_view);
     private NoteEntity note;
 
-    public NoteViewHolder(@NonNull View itemView) {
-        super(itemView);
+    public NoteViewHolder(@NonNull View itemView) { super(itemView); }
+
+    public NoteViewHolder(@NonNull ViewGroup parent, NoteAdapter.InteractionListener clickListener) {
+        super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_note, parent, false));
+        itemView.setOnClickListener(v -> clickListener.OnItemShortClick(note));
+        itemView.setOnLongClickListener(v -> clickListener.OnItemLongClick(note));
     }
 
-    public NoteViewHolder(@NonNull ViewGroup parent, NoteAdapter.onItemClickListener clickListener) {
-        super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_note, parent, false));
-        itemView.setOnClickListener(v -> clickListener.OnItemClick(note));
-    }
 
     public void bind(NoteEntity note) {
         this.note = note;

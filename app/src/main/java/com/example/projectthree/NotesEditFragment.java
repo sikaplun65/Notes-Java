@@ -24,7 +24,7 @@ public class NotesEditFragment extends Fragment {
     private static final String ID_KEY = "ID_KEY";
     private EditText titleEditText;
     private EditText detailEditText;
-    Button saveButton;
+    private Button saveButton;
     private NotesList notesList;
     private String noteId;
     private String tempTitle;
