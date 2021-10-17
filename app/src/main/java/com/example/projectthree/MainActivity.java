@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -15,9 +16,14 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initNotesListFragment(savedInstanceState);
         initBottomNavigationMenu();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Toast.makeText(this,R.string.text_application_has_terminated,Toast.LENGTH_LONG).show();
+        super.onDestroy();
     }
 
     private void initNotesListFragment(Bundle savedInstanceState) {
@@ -45,28 +51,27 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
         }
     }
 
-
     @SuppressLint("NonConstantResourceId")
     private void initBottomNavigationMenu() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
-                case R.id.folder_nav_menu:
-                    Fragment filesFragment = getSupportFragmentManager().findFragmentByTag("files_fragment");
+                case R.id.setting_notes_nav_menu:
+                    Fragment filesFragment = getSupportFragmentManager().findFragmentByTag("setting_notes_fragment");
                     if(filesFragment == null){
                         getSupportFragmentManager()
                                 .beginTransaction()
-                                .replace(R.id.fragment_container, new FilesFragment(),"files_fragment")
+                                .replace(R.id.fragment_container, new SettingsFragment(),"setting_notes_fragment")
                                 .addToBackStack(null)
                                 .commit();
                     }
                     return true;
-                case R.id.settings_nav_menu:
-                    Fragment settingsFragment = getSupportFragmentManager().findFragmentByTag("setting_fragment");
+                case R.id.sort_notes_nav_menu:
+                    Fragment settingsFragment = getSupportFragmentManager().findFragmentByTag("sort_notes_fragment");
                     if(settingsFragment == null){
                         getSupportFragmentManager()
                                 .beginTransaction()
-                                .replace(R.id.fragment_container, new SettingsFragment(),"setting_fragment")
+                                .replace(R.id.fragment_container, new SortNotesFragment(),"sort_notes_fragment")
                                 .addToBackStack(null)
                                 .commit();
                     }

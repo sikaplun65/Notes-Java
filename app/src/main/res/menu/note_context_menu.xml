@@ -9,8 +9,5 @@
     <item
         android:id="@+id/menu_share_note"
         android:title="@string/text_menu_share_note" />
-    <item
-        android:id="@+id/menu_hide_note"
-        android:title="Скрыть заметку" />
 
 </menu>

@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.projectthree.domain.NoteEntity;
 import com.example.projectthree.domain.NotesList;
 import com.example.projectthree.domain.NotesListImpl;
+import com.google.android.material.snackbar.Snackbar;
 
 public class NotesListFragment extends Fragment implements NoteAdapter.InteractionListener{
     private Controller controller;
@@ -72,8 +74,7 @@ public class NotesListFragment extends Fragment implements NoteAdapter.Interacti
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_delete_note:
-                notesList.removeNote(selectedNotesItem);
-                adapter.notifyDataSetChanged();
+                deleteNoteAlertDialog();
                 break;
             case R.id.menu_edit_note:
                 onItemClick(selectedNotesItem);
@@ -81,13 +82,24 @@ public class NotesListFragment extends Fragment implements NoteAdapter.Interacti
             case R.id.menu_share_note:
                 Toast.makeText(getActivity(),"Пункт меню в разработке",Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.menu_hide_note:
-                Toast.makeText(getActivity(),"Пункт меню в разработке",Toast.LENGTH_SHORT).show();
-                break;
             default:
                 break;
         }
         return super.onContextItemSelected(item);
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void deleteNoteAlertDialog() {
+        new AlertDialog.Builder(requireContext())
+                .setMessage(R.string.text_message_alert_dialog_delete_note)
+                .setCancelable(false)
+                .setPositiveButton(R.string.text_yes, (dialog, id) -> {
+                    notesList.removeNote(selectedNotesItem);
+                    adapter.notifyDataSetChanged();
+                    Snackbar.make(getView(),"Заметка \""+selectedNotesItem.getTitle()+"\" удалена",Snackbar.LENGTH_LONG).show();
+                })
+                .setNegativeButton(R.string.text_no, null)
+                .show();
     }
 
 
