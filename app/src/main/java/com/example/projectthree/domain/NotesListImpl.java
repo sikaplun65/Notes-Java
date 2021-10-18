@@ -5,11 +5,10 @@ import androidx.annotation.RequiresApi;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NotesListImpl implements NotesList {
+public class NotesListImpl implements NotesList{
 
-    private static NotesListImpl list;
-
-    private List<NoteEntity> notesList;
+    private static NotesListImpl instance;
+    private final List<NoteEntity> notesList;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private NotesListImpl(){
@@ -18,11 +17,11 @@ public class NotesListImpl implements NotesList {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public static NotesListImpl getList(){
-        if(list == null) {
-            list = new NotesListImpl();
+    public static NotesListImpl getInstance(){
+        if(instance == null) {
+            instance = new NotesListImpl();
         }
-        return list;
+        return instance;
     }
 
     @Override
@@ -52,7 +51,7 @@ public class NotesListImpl implements NotesList {
     }
 
     private void filListOfNotesWithTestValues(){
-        int numberOfNotes = 5;
+        int numberOfNotes = 6;
         for(int i = 0; i < numberOfNotes; i++){
             notesList.add(new NoteEntity("Заметка " + (i+1), "Сайт рыбатекст поможет дизайнеру, верстальщику," +
                     " вебмастеру сгенерировать несколько абзацев более менее осмысленного текста"));

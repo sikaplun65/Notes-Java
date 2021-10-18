@@ -20,18 +20,17 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.projectthree.domain.App;
 import com.example.projectthree.domain.NoteEntity;
-import com.example.projectthree.domain.NotesList;
-import com.example.projectthree.domain.NotesListImpl;
 import com.google.android.material.snackbar.Snackbar;
 
-public class NotesListFragment extends Fragment implements NoteAdapter.InteractionListener{
+public class NotesListFragment extends Fragment implements NoteAdapter.InteractionListener {
     private Controller controller;
-    private NotesList notesList;
     private NoteEntity selectedNotesItem;
     private String id;
     private RecyclerView recyclerView;
     private NoteAdapter adapter;
+    private App notesList;
 
 
     @Override
@@ -53,7 +52,7 @@ public class NotesListFragment extends Fragment implements NoteAdapter.Interacti
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        notesList = NotesListImpl.getList();
+        notesList = (App) requireActivity().getApplicationContext();
         adapter = new NoteAdapter(notesList.getNotes(), this);
 
         initializationAddNewNoteButton(view);
@@ -80,7 +79,7 @@ public class NotesListFragment extends Fragment implements NoteAdapter.Interacti
                 onItemClick(selectedNotesItem);
                 break;
             case R.id.menu_share_note:
-                Toast.makeText(getActivity(),"Пункт меню в разработке",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Пункт меню в разработке", Toast.LENGTH_SHORT).show();
                 break;
             default:
                 break;
@@ -96,7 +95,7 @@ public class NotesListFragment extends Fragment implements NoteAdapter.Interacti
                 .setPositiveButton(R.string.text_yes, (dialog, id) -> {
                     notesList.removeNote(selectedNotesItem);
                     adapter.notifyDataSetChanged();
-                    Snackbar.make(getView(),"Заметка \""+selectedNotesItem.getTitle()+"\" удалена",Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(getView(), "Заметка \"" + selectedNotesItem.getTitle() + "\" удалена", Snackbar.LENGTH_LONG).show();
                 })
                 .setNegativeButton(R.string.text_no, null)
                 .show();
@@ -139,14 +138,18 @@ public class NotesListFragment extends Fragment implements NoteAdapter.Interacti
         super.onDestroy();
     }
 
-    interface Controller {
-        void startNotesCreateFragment();
-        void startNotesEditFragment(String id);
+    @Override
+    public void OnItemShortClick(NoteEntity item) {
     }
 
     @Override
-    public void OnItemShortClick(NoteEntity item) {}
+    public boolean OnItemLongClick(NoteEntity item) {
+        return false;
+    }
 
-    @Override
-    public boolean OnItemLongClick(NoteEntity item) { return false; }
+    interface Controller {
+        void startNotesCreateFragment();
+
+        void startNotesEditFragment(String id);
+    }
 }

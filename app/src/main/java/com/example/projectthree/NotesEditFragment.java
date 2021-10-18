@@ -16,16 +16,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.projectthree.domain.App;
 import com.example.projectthree.domain.NoteEntity;
 import com.example.projectthree.domain.NotesList;
-import com.example.projectthree.domain.NotesListImpl;
 
 public class NotesEditFragment extends Fragment {
     private static final String ID_KEY = "ID_KEY";
     private EditText titleEditText;
     private EditText detailEditText;
-    Button saveButton;
-    private NotesList notesList;
+    private Button saveButton;
+    private App notesList;
     private String noteId;
     private String tempTitle;
     private String tempDetail;
@@ -44,7 +44,7 @@ public class NotesEditFragment extends Fragment {
         titleEditText = view.findViewById(R.id.title_edit_text);
         detailEditText = view.findViewById(R.id.detail_edit_text);
         saveButton = view.findViewById(R.id.save_button);
-        notesList = NotesListImpl.getList();
+        notesList =(App) requireActivity().getApplicationContext();
 
         Bundle args = getArguments();
         if (args != null && args.containsKey(ID_KEY)) {
@@ -90,9 +90,11 @@ public class NotesEditFragment extends Fragment {
         saveButton.setOnClickListener(v -> {
             if (noteId == null) {
                 createNote();
-            }else if (tempTitle.length() != 0) {
+            }
+            if (tempTitle.length() != 0) {
                 notesList.getNote(noteId).setTitle(tempTitle);
-            }else if (tempDetail.length() != 0) {
+            }
+            if (tempDetail.length() != 0) {
                 notesList.getNote(noteId).setDetail(tempDetail);
             }
 
