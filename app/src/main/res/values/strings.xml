@@ -9,4 +9,7 @@
     <string name="text_new_note_main_menu">Новая заметка</string>
     <string name="text_settings_nav_menu">Настройки</string>
     <string name="text_file_text_view">Файлы</string>
+    <string name="text_menu_delete_note">Удалить заметку</string>
+    <string name="text_menu_edit_note">Редактировать заметку</string>
+    <string name="text_menu_share_note">Поделится заметкой</string>
 </resources>
