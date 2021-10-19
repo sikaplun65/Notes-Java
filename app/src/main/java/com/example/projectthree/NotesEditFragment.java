@@ -107,6 +107,7 @@ public class NotesEditFragment extends Fragment {
         });
     }
 
+
     private void createNote() {
         NoteEntity newNote = new NoteEntity();
         notesList.addNote(newNote);
@@ -130,13 +131,12 @@ public class NotesEditFragment extends Fragment {
     }
 
     public void setHints() {
-
         if (titleEditText.getText().toString().length() == 0) {
             titleEditText.setHint("Заголовок");
         }
         if (detailEditText.getText().toString().length() == 0) {
             detailEditText.setHint("текст заметки");
         }
-
     }
+  
 }
