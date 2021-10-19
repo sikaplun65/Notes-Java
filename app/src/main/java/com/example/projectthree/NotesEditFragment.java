@@ -138,6 +138,5 @@ public class NotesEditFragment extends Fragment {
             detailEditText.setHint("текст заметки");
         }
     }
-
-
+  
 }
