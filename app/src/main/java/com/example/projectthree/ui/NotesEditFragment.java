@@ -1,4 +1,4 @@
-package com.example.projectthree.ui;
+package com.example.projectthree;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -16,16 +16,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.projectthree.R;
-import com.example.projectthree.domain.App;
 import com.example.projectthree.domain.NoteEntity;
+import com.example.projectthree.domain.NotesList;
+import com.example.projectthree.domain.NotesListImpl;
 
 public class NotesEditFragment extends Fragment {
     private static final String ID_KEY = "ID_KEY";
     private EditText titleEditText;
     private EditText detailEditText;
     private Button saveButton;
-    private App notesList;
+    private NotesList notesList;
     private String noteId;
     private String tempTitle;
     private String tempDetail;
@@ -44,7 +44,7 @@ public class NotesEditFragment extends Fragment {
         titleEditText = view.findViewById(R.id.title_edit_text);
         detailEditText = view.findViewById(R.id.detail_edit_text);
         saveButton = view.findViewById(R.id.save_button);
-        notesList =(App) requireActivity().getApplicationContext();
+        notesList = NotesListImpl.getList();
 
         Bundle args = getArguments();
         if (args != null && args.containsKey(ID_KEY)) {
@@ -97,10 +97,6 @@ public class NotesEditFragment extends Fragment {
             if (tempDetail.length() != 0) {
                 notesList.getNote(noteId).setDetail(tempDetail);
             }
-            if(!tempTitle.equals(notesList.getNote(noteId).getTitle()) || !tempDetail.equals(notesList.getNote(noteId).getDetail())){
-                notesList.getNote(noteId).setModifiedDate();
-            }
-
 
             if (titleEditText.length() == 0 && detailEditText.length() != 0) {
                 notesList.getNote(noteId).setTitle(detailEditText.getText().toString().substring(0, 10));
@@ -110,6 +106,7 @@ public class NotesEditFragment extends Fragment {
             requireActivity().onBackPressed();
         });
     }
+
 
     private void createNote() {
         NoteEntity newNote = new NoteEntity();
@@ -134,13 +131,12 @@ public class NotesEditFragment extends Fragment {
     }
 
     public void setHints() {
-
         if (titleEditText.getText().toString().length() == 0) {
             titleEditText.setHint("Заголовок");
         }
         if (detailEditText.getText().toString().length() == 0) {
             detailEditText.setHint("текст заметки");
         }
-
     }
+
 }
