@@ -1,12 +1,9 @@
 package com.example.projectthree.domain;
 
-import android.annotation.SuppressLint;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,45 +43,20 @@ public class NotesListImpl implements NotesList {
         return note;
     }
 
-    @SuppressLint("SimpleDateFormat")
     public void sortFromOldToNewNotes() {
-        Collections.sort(notesList, (o1, o2) -> {
-            try {
-                return new SimpleDateFormat("dd/MM/yyyy - HH.mm.ss").parse(o1.getCreateDate())
-                        .compareTo(new SimpleDateFormat("dd/MM/yyyy - HH.mm.ss").parse(o2.getCreateDate()));
-            } catch (ParseException e) {
-                return 0;
-            }
-        });
+        Collections.sort(notesList, ((o1, o2) -> o1.getCurrentDate().compareTo(o2.getCurrentDate())));
     }
 
-    @SuppressLint("SimpleDateFormat")
     public void sortFromNewToOldNotes() {
-        Collections.sort(notesList, (o1, o2) -> {
-            try {
-                return new SimpleDateFormat("dd/MM/yyyy - HH.mm.ss").parse(o2.getCreateDate())
-                        .compareTo(new SimpleDateFormat("dd/MM/yyyy - HH.mm.ss").parse(o1.getCreateDate()));
-            } catch (ParseException e) {
-                return 0;
-            }
-        });
+        Collections.sort(notesList, (o1, o2) -> o2.getCurrentDate().compareTo(o1.getCurrentDate()));
     }
 
-
-    @SuppressLint("SimpleDateFormat")
     public void sorByDateModifiedNotes() {
         Collections.sort(notesList, (o1, o2) -> {
-            try {
-                if (o1.getModifiedDate() != null && o2.getModifiedDate() != null) {
-                    return new SimpleDateFormat("dd/MM/yyyy - HH.mm.ss").parse(o2.getModifiedDate())
-                            .compareTo(new SimpleDateFormat("dd/MM/yyyy - HH.mm.ss").parse(o1.getModifiedDate()));
-                }
-                return o1.getModifiedDate() == null ? 1 : -1;
-
-            } catch (ParseException e) {
-                return 0;
+            if (o1.getModifiedDate() != null && o2.getModifiedDate() != null) {
+                return o2.getModifiedDate().compareTo(o1.getModifiedDate());
             }
-
+            return o1.getModifiedDate() == null ? 1 : -1;
         });
     }
 

@@ -1,4 +1,4 @@
-package com.example.projectthree;
+package com.example.projectthree.ui;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.projectthree.R;
+import com.example.projectthree.domain.App;
 import com.example.projectthree.domain.NoteEntity;
 import com.example.projectthree.domain.NotesList;
 import com.example.projectthree.domain.NotesListImpl;
@@ -25,14 +27,14 @@ public class NotesEditFragment extends Fragment {
     private EditText titleEditText;
     private EditText detailEditText;
     private Button saveButton;
-    private NotesList notesList;
+    private App notesList;
     private String noteId;
     private String tempTitle;
     private String tempDetail;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_notes_edit, container, false);
+        return inflater.inflate(R.layout.fragment_notes_edit,container,false);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -44,7 +46,7 @@ public class NotesEditFragment extends Fragment {
         titleEditText = view.findViewById(R.id.title_edit_text);
         detailEditText = view.findViewById(R.id.detail_edit_text);
         saveButton = view.findViewById(R.id.save_button);
-        notesList = NotesListImpl.getList();
+        notesList = (App)requireActivity().getApplicationContext();
 
         Bundle args = getArguments();
         if (args != null && args.containsKey(ID_KEY)) {
@@ -96,6 +98,10 @@ public class NotesEditFragment extends Fragment {
             }
             if (tempDetail.length() != 0) {
                 notesList.getNote(noteId).setDetail(tempDetail);
+            }
+
+            if(!tempTitle.equals(notesList.getNote(noteId).getTitle()) || !tempDetail.equals(notesList.getNote(noteId).getDetail())){
+                notesList.getNote(noteId).setModifiedDate();
             }
 
             if (titleEditText.length() == 0 && detailEditText.length() != 0) {

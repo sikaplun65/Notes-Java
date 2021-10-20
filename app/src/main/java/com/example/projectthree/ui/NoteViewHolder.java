@@ -1,5 +1,6 @@
 package com.example.projectthree.ui;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.projectthree.R;
 import com.example.projectthree.domain.NoteEntity;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class NoteViewHolder extends RecyclerView.ViewHolder {
 
     private final TextView createDateTextView = itemView.findViewById(R.id.create_date_text_view);
@@ -19,8 +23,6 @@ public class NoteViewHolder extends RecyclerView.ViewHolder {
     private final TextView detailTextView = itemView.findViewById(R.id.detail_text_view);
     private NoteEntity note;
 
-    public NoteViewHolder(@NonNull View itemView) { super(itemView); }
-
     public NoteViewHolder(@NonNull ViewGroup parent, NoteAdapter.InteractionListener clickListener) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_note, parent, false));
         itemView.setOnClickListener(v -> clickListener.OnItemShortClick(note));
@@ -28,10 +30,13 @@ public class NoteViewHolder extends RecyclerView.ViewHolder {
     }
 
 
+    @SuppressLint("SimpleDateFormat")
     public void bind(NoteEntity note) {
         this.note = note;
-        createDateTextView.setText(note.getCreateDate());
-        modifiedDateTextView.setText(note.getModifiedDate());
+
+        modifiedDateTextView.setText((note.getModifiedDate() == null) ? null : new SimpleDateFormat("dd/MM/yyyy - HH.mm.ss").format(note.getModifiedDate()));
+        createDateTextView.setText(new SimpleDateFormat("dd/MM/yyyy - HH.mm.ss").format(note.getCurrentDate()));
+
         titleTextView.setText(note.getTitle());
         detailTextView.setText(note.getDetail());
     }

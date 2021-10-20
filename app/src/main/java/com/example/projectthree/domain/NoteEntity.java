@@ -9,14 +9,13 @@ public class NoteEntity {
     private String id;
     private String title;
     private String detail;
-    private String createDate;
-    private String modifiedDate;
+    private final Date currentDate;
+    private Date modifiedDate;
 
     public NoteEntity(){
         title = "";
         detail = "";
-        modifiedDate ="";
-        setCurrentDate();
+        currentDate = new Date();
         generateId();
     }
 
@@ -24,15 +23,15 @@ public class NoteEntity {
     public NoteEntity(String title, String detail) {
         this.title = title;
         this.detail = detail;
-        setCurrentDate();
+        currentDate = new Date();
         generateId();
     }
 
-    public String getCreateDate() {
-        return createDate;
+    public Date getCurrentDate() {
+        return currentDate;
     }
 
-    public String getModifiedDate() {
+    public Date getModifiedDate() {
         return modifiedDate;
     }
 
@@ -62,13 +61,9 @@ public class NoteEntity {
         id = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
     }
 
-    @SuppressLint("SimpleDateFormat")
-    private void setCurrentDate(){
-        createDate = new SimpleDateFormat("dd/MM/yyyy - HH.mm.ss").format(new Date());
-    }
 
     @SuppressLint("SimpleDateFormat")
     public void setModifiedDate(){
-        modifiedDate = new SimpleDateFormat("dd/MM/yyyy - HH.mm.ss").format(new Date());
+        modifiedDate = new Date();
     }
 }
