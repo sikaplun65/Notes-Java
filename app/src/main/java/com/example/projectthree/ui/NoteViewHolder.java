@@ -1,4 +1,4 @@
-package com.example.projectthree;
+package com.example.projectthree.ui;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,11 +8,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.projectthree.R;
 import com.example.projectthree.domain.NoteEntity;
 
 public class NoteViewHolder extends RecyclerView.ViewHolder {
 
-    private final TextView dateTextView = itemView.findViewById(R.id.date_text_view);
+    private final TextView createDateTextView = itemView.findViewById(R.id.create_date_text_view);
+    private final TextView modifiedDateTextView = itemView.findViewById(R.id.modified_date_text_view);
     private final TextView titleTextView = itemView.findViewById(R.id.title_text_view);
     private final TextView detailTextView = itemView.findViewById(R.id.detail_text_view);
     private NoteEntity note;
@@ -28,7 +30,8 @@ public class NoteViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(NoteEntity note) {
         this.note = note;
-        dateTextView.setText(note.getDate());
+        createDateTextView.setText(note.getCreateDate());
+        modifiedDateTextView.setText(note.getModifiedDate());
         titleTextView.setText(note.getTitle());
         detailTextView.setText(note.getDetail());
     }

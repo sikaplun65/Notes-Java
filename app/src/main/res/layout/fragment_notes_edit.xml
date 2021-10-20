@@ -18,7 +18,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/twenty_eight_sp"
-        android:hint="@string/text_hint_title_edit_text"
         android:padding="@dimen/eight_dp"/>
 
     <EditText
@@ -26,7 +25,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/twenty_eight_sp"
-        android:hint="@string/text_hint_detail_edit_text"
         android:padding="@dimen/eight_dp"/>
 
 </LinearLayout>

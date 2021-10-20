@@ -1,4 +1,4 @@
-package com.example.projectthree;
+package com.example.projectthree.ui;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -16,9 +16,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.projectthree.R;
 import com.example.projectthree.domain.App;
 import com.example.projectthree.domain.NoteEntity;
-import com.example.projectthree.domain.NotesList;
 
 public class NotesEditFragment extends Fragment {
     private static final String ID_KEY = "ID_KEY";
@@ -97,6 +97,10 @@ public class NotesEditFragment extends Fragment {
             if (tempDetail.length() != 0) {
                 notesList.getNote(noteId).setDetail(tempDetail);
             }
+            if(!tempTitle.equals(notesList.getNote(noteId).getTitle()) || !tempDetail.equals(notesList.getNote(noteId).getDetail())){
+                notesList.getNote(noteId).setModifiedDate();
+            }
+
 
             if (titleEditText.length() == 0 && detailEditText.length() != 0) {
                 notesList.getNote(noteId).setTitle(detailEditText.getText().toString().substring(0, 10));

@@ -1,11 +1,12 @@
-package com.example.projectthree;
+package com.example.projectthree.ui;
 
 import android.annotation.SuppressLint;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.projectthree.domain.NoteEntity;
-import java.util.ArrayList;
+
 import java.util.List;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {

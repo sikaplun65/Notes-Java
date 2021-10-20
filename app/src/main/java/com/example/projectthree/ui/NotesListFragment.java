@@ -1,4 +1,4 @@
-package com.example.projectthree;
+package com.example.projectthree.ui;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -20,8 +20,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.projectthree.R;
 import com.example.projectthree.domain.App;
 import com.example.projectthree.domain.NoteEntity;
+import com.example.projectthree.ui.NoteAdapter;
 import com.google.android.material.snackbar.Snackbar;
 
 public class NotesListFragment extends Fragment implements NoteAdapter.InteractionListener {
@@ -147,7 +149,7 @@ public class NotesListFragment extends Fragment implements NoteAdapter.Interacti
         return false;
     }
 
-    interface Controller {
+    public interface Controller {
         void startNotesCreateFragment();
 
         void startNotesEditFragment(String id);

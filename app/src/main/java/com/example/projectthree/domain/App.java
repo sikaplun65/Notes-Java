@@ -35,4 +35,12 @@ public class App extends Application implements NotesList {
     public void removeNote(NoteEntity note) {
         notesList.removeNote(note);
     }
+
+    public void sortFromOldToNewNotes(){
+        notesList.sortFromOldToNewNotes();
+    }
+
+    public void sortFromNewToOldNotes(){ notesList.sortFromNewToOldNotes(); }
+
+    public void sortByModifiedDateNote(){notesList.sorByDateModifiedNotes();}
 }

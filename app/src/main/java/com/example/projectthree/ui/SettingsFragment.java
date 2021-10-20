@@ -1,4 +1,4 @@
-package com.example.projectthree;
+package com.example.projectthree.ui;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.projectthree.R;
 
 public class SettingsFragment extends Fragment {
 
@@ -26,8 +28,5 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        view.findViewById(R.id.close_button_setting_fragment).setOnClickListener(v -> {
-            getActivity().onBackPressed();
-        });
     }
 }

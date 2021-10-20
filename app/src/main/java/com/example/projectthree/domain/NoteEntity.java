@@ -2,21 +2,20 @@ package com.example.projectthree.domain;
 
 import android.annotation.SuppressLint;
 
-import com.example.projectthree.R;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Random;
 
 public class NoteEntity {
     private String id;
     private String title;
     private String detail;
-    private String date;
+    private String createDate;
+    private String modifiedDate;
 
     public NoteEntity(){
         title = "";
         detail = "";
+        modifiedDate ="";
         setCurrentDate();
         generateId();
     }
@@ -29,8 +28,12 @@ public class NoteEntity {
         generateId();
     }
 
-    public String getDate() {
-        return date;
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public String getModifiedDate() {
+        return modifiedDate;
     }
 
     public String getId() {
@@ -61,6 +64,11 @@ public class NoteEntity {
 
     @SuppressLint("SimpleDateFormat")
     private void setCurrentDate(){
-        date = new SimpleDateFormat("dd/MM/yyyy - HH.mm.ss").format(new Date());
+        createDate = new SimpleDateFormat("dd/MM/yyyy - HH.mm.ss").format(new Date());
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    public void setModifiedDate(){
+        modifiedDate = new SimpleDateFormat("dd/MM/yyyy - HH.mm.ss").format(new Date());
     }
 }
