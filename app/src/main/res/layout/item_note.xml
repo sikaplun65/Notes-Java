@@ -3,6 +3,7 @@
     xmlns:tool="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:clickable="true"
     android:focusable="true">
 
@@ -37,28 +38,21 @@
 
                 <TextView
                     android:id="@+id/create_date_text_view"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:maxLines="1"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:text="11/11/1111 - 11.11"/>
 
-<!--                <TextView-->
-<!--                    android:id="@+id/create1_date_text_view"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:maxLines="1"-->
-<!--                    android:text="изменено:"-->
-<!--                    android:layout_gravity="center"-->
-<!--                    android:textStyle="bold" />-->
 
                 <TextView
                     android:id="@+id/modified_date_text_view"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/eight_dp"
                     android:maxLines="1"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:text="22/22/2222 - 22.22"/>
 
             </LinearLayout>
 

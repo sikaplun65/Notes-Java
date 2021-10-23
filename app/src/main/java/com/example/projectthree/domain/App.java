@@ -7,7 +7,7 @@ import androidx.annotation.RequiresApi;
 
 import java.util.List;
 
-public class App extends Application implements NotesList {
+public class App extends Application{
     private NotesListImpl notesList;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -16,22 +16,18 @@ public class App extends Application implements NotesList {
         notesList = NotesListImpl.getInstance();
     }
 
-    @Override
     public List<NoteEntity> getNotes() {
         return notesList.getNotes();
     }
 
-    @Override
     public NoteEntity getNote(String id) {
         return notesList.getNote(id);
     }
 
-    @Override
     public void addNote(NoteEntity note) {
         notesList.addNote(note);
     }
 
-    @Override
     public void removeNote(NoteEntity note) {
         notesList.removeNote(note);
     }

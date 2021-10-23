@@ -24,11 +24,6 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
         initBottomNavigationMenu();
     }
 
-    @Override
-    protected void onDestroy() {
-        Toast.makeText(this, R.string.text_application_has_terminated, Toast.LENGTH_LONG).show();
-        super.onDestroy();
-    }
 
     private void initNotesListFragment(Bundle savedInstanceState) {
         if (findViewById(R.id.fragment_container) != null) {
