@@ -1,21 +1,18 @@
 package com.example.projectthree.domain;
 
-import android.annotation.SuppressLint;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Calendar;
 
 public class NoteEntity {
+    private final Calendar createDate;
+    private Calendar modifiedDate;
     private String id;
     private String title;
     private String detail;
-    private final Date currentDate;
-    private Date modifiedDate;
 
-    public NoteEntity(){
+    public NoteEntity() {
         title = "";
         detail = "";
-        currentDate = new Date();
+        createDate = Calendar.getInstance();
         generateId();
     }
 
@@ -23,15 +20,15 @@ public class NoteEntity {
     public NoteEntity(String title, String detail) {
         this.title = title;
         this.detail = detail;
-        currentDate = new Date();
+        createDate = Calendar.getInstance();
         generateId();
     }
 
-    public Date getCurrentDate() {
-        return currentDate;
+    public Calendar getCreateDate() {
+        return createDate;
     }
 
-    public Date getModifiedDate() {
+    public Calendar getModifiedDate() {
         return modifiedDate;
     }
 
@@ -55,15 +52,11 @@ public class NoteEntity {
         this.detail = detail;
     }
 
-
-    @SuppressLint("SimpleDateFormat")
-    private void generateId(){
-        id = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
+    private void generateId() {
+        id = String.valueOf(Calendar.getInstance().getTime().getTime());
     }
 
-
-    @SuppressLint("SimpleDateFormat")
-    public void setModifiedDate(){
-        modifiedDate = new Date();
+    public void setModifiedDate() {
+        modifiedDate = Calendar.getInstance();
     }
 }

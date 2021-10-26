@@ -1,13 +1,8 @@
 package com.example.projectthree.ui;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -15,12 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
 
 import com.example.projectthree.R;
 import com.example.projectthree.domain.App;
 import com.example.projectthree.domain.NoteEntity;
-import com.example.projectthree.domain.NotesList;
-import com.example.projectthree.domain.NotesListImpl;
 
 public class NotesEditFragment extends Fragment {
     private static final String ID_KEY = "ID_KEY";
@@ -32,9 +31,21 @@ public class NotesEditFragment extends Fragment {
     private String tempTitle;
     private String tempDetail;
 
+    public static NotesEditFragment create(String id) {
+        NotesEditFragment fragment = new NotesEditFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(ID_KEY, id);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public static NotesEditFragment create() {
+        return new NotesEditFragment();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_notes_edit,container,false);
+        return inflater.inflate(R.layout.fragment_notes_edit, container, false);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -46,7 +57,7 @@ public class NotesEditFragment extends Fragment {
         titleEditText = view.findViewById(R.id.title_edit_text);
         detailEditText = view.findViewById(R.id.detail_edit_text);
         saveButton = view.findViewById(R.id.save_button);
-        notesList = (App)requireActivity().getApplicationContext();
+        notesList = (App) requireActivity().getApplicationContext();
 
         Bundle args = getArguments();
         if (args != null && args.containsKey(ID_KEY)) {
@@ -61,6 +72,7 @@ public class NotesEditFragment extends Fragment {
         detailEditText.setText(note.getDetail());
     }
 
+    @SuppressLint("ResourceAsColor")
     private void setupListeners() {
 
         setHints();
@@ -100,7 +112,7 @@ public class NotesEditFragment extends Fragment {
                 notesList.getNote(noteId).setDetail(tempDetail);
             }
 
-            if(!tempTitle.equals(notesList.getNote(noteId).getTitle()) || !tempDetail.equals(notesList.getNote(noteId).getDetail())){
+            if (!tempTitle.equals(notesList.getNote(noteId).getTitle()) || !tempDetail.equals(notesList.getNote(noteId).getDetail())) {
                 notesList.getNote(noteId).setModifiedDate();
             }
 
@@ -113,23 +125,10 @@ public class NotesEditFragment extends Fragment {
         });
     }
 
-
     private void createNote() {
         NoteEntity newNote = new NoteEntity();
         notesList.addNote(newNote);
         noteId = newNote.getId();
-    }
-
-    public static NotesEditFragment create(String id) {
-        NotesEditFragment fragment = new NotesEditFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(ID_KEY, id);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
-    public static NotesEditFragment create() {
-        return new NotesEditFragment();
     }
 
     public boolean isNoteBlank() {

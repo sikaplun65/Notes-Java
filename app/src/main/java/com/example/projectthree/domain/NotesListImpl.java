@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class NotesListImpl implements NotesList {
@@ -43,20 +44,25 @@ public class NotesListImpl implements NotesList {
         return note;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void sortFromOldToNewNotes() {
-        Collections.sort(notesList, ((o1, o2) -> o1.getCurrentDate().compareTo(o2.getCurrentDate())));
+        Collections.sort(notesList, (Comparator.comparing(NoteEntity::getCreateDate)));
     }
 
     public void sortFromNewToOldNotes() {
-        Collections.sort(notesList, (o1, o2) -> o2.getCurrentDate().compareTo(o1.getCurrentDate()));
+        Collections.sort(notesList, (o1, o2) -> o2.getCreateDate().compareTo(o1.getCreateDate()));
     }
 
     public void sorByDateModifiedNotes() {
         Collections.sort(notesList, (o1, o2) -> {
-            if (o1.getModifiedDate() != null && o2.getModifiedDate() != null) {
-                return o2.getModifiedDate().compareTo(o1.getModifiedDate());
+            if (o1.getModifiedDate() == null && o2.getModifiedDate() == null) {
+                return 0;
+            } else if (o1.getModifiedDate() == null) {
+                return 1;
+            } else if (o2.getModifiedDate() == null) {
+                return -1;
             }
-            return o1.getModifiedDate() == null ? 1 : -1;
+            return o2.getModifiedDate().compareTo(o1.getModifiedDate());
         });
     }
 
@@ -75,7 +81,8 @@ public class NotesListImpl implements NotesList {
 
         for (int i = 0; i < numberOfNotes; i++) {
             try {
-                Thread.sleep(1000);
+                // задержка времени при создании для проверки сортировок
+                Thread.sleep(10);
                 notesList.add(new NoteEntity("Заметка " + (i + 1), "Сайт рыбатекст поможет дизайнеру, верстальщику," +
                         " вебмастеру сгенерировать несколько абзацев более менее осмысленного текста"));
             } catch (InterruptedException ex) {
