@@ -1,93 +1,60 @@
-package com.example.projectthree.domain;
+package com.example.projectthree.domain
 
-import android.os.Build;
+import java.util.*
 
-import androidx.annotation.RequiresApi;
+object NotesListImpl : NotesList {
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+    private var notesList: MutableList<NoteEntity>
 
-public class NotesListImpl implements NotesList {
-
-    private static NotesListImpl instance;
-    private final List<NoteEntity> notesList;
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private NotesListImpl() {
-        notesList = new ArrayList<>();
-        filListOfNotesWithTestValues();
+    init {
+        notesList = mutableListOf()
+        filListOfNotesWithTestValues()
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public static NotesListImpl getInstance() {
-        if (instance == null) {
-            instance = new NotesListImpl();
-        }
-        return instance;
+    fun getNotesList(): NotesListImpl {
+        return NotesListImpl
     }
 
-    @Override
-    public List<NoteEntity> getNotes() {
-        return notesList;
+    override fun getNotes(): List<NoteEntity> = notesList
+
+    override fun getNote(id: String): NoteEntity? = notesList.find { note -> note.id.equals(id) }
+
+    fun sortFromOldToNewNotes() = notesList.sortBy { noteEntity -> noteEntity.createDate }
+
+    fun sortFromNewToOldNotes() = notesList.sortByDescending { noteEntity -> noteEntity.createDate }
+
+    fun sorByDateModifiedNotes() {
+        val sortedListNotes = notesList.sortedWith(
+            compareBy<NoteEntity, Calendar?>
+                (nullsLast(reverseOrder()), { it.modifiedDate }),
+        )
+        notesList = sortedListNotes as MutableList<NoteEntity>
     }
 
-    @Override
-    public NoteEntity getNote(String id) {
-        NoteEntity note = null;
-        for (int i = 0; i < notesList.size(); i++) {
-            if (notesList.get(i).getId().equals(id)) {
-                note = notesList.get(i);
-            }
-        }
-        return note;
+    override fun addNote(note: NoteEntity) {
+        notesList.add(note)
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public void sortFromOldToNewNotes() {
-        Collections.sort(notesList, (Comparator.comparing(NoteEntity::getCreateDate)));
+    override fun removeNote(note: NoteEntity) {
+        notesList.remove(note)
     }
 
-    public void sortFromNewToOldNotes() {
-        Collections.sort(notesList, (o1, o2) -> o2.getCreateDate().compareTo(o1.getCreateDate()));
-    }
-
-    public void sorByDateModifiedNotes() {
-        Collections.sort(notesList, (o1, o2) -> {
-            if (o1.getModifiedDate() == null && o2.getModifiedDate() == null) {
-                return 0;
-            } else if (o1.getModifiedDate() == null) {
-                return 1;
-            } else if (o2.getModifiedDate() == null) {
-                return -1;
-            }
-            return o2.getModifiedDate().compareTo(o1.getModifiedDate());
-        });
-    }
-
-    @Override
-    public void addNote(NoteEntity note) {
-        notesList.add(note);
-    }
-
-    @Override
-    public void removeNote(NoteEntity note) {
-        notesList.remove(note);
-    }
-
-    private void filListOfNotesWithTestValues() {
-        int numberOfNotes = 6;
-
-        for (int i = 0; i < numberOfNotes; i++) {
+    private fun filListOfNotesWithTestValues() {
+        val numberOfNotes = 6
+        for (i in 0 until numberOfNotes) {
             try {
                 // задержка времени при создании для проверки сортировок
-                Thread.sleep(10);
-                notesList.add(new NoteEntity("Заметка " + (i + 1), "Сайт рыбатекст поможет дизайнеру, верстальщику," +
-                        " вебмастеру сгенерировать несколько абзацев более менее осмысленного текста"));
-            } catch (InterruptedException ex) {
-                Thread.currentThread().interrupt();
+                Thread.sleep(10)
+                notesList.add(
+                    NoteEntity(
+                        "Заметка " + (i + 1), "Сайт рыбатекст поможет дизайнеру, верстальщику," +
+                                " вебмастеру сгенерировать несколько абзацев более менее осмысленного текста"
+                    )
+                )
+            } catch (ex: InterruptedException) {
+                Thread.currentThread().interrupt()
             }
         }
     }
+
 }

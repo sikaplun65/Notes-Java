@@ -1,147 +1,139 @@
-package com.example.projectthree.ui;
+package com.example.projectthree.ui
 
-import android.annotation.SuppressLint;
-import android.os.Build;
-import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import androidx.fragment.app.Fragment
+import com.example.projectthree.R
+import com.example.projectthree.domain.App
+import com.example.projectthree.domain.NoteEntity
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
+class NotesEditFragment : Fragment() {
+    private lateinit var titleEditText: EditText
+    private lateinit var detailEditText: EditText
+    private lateinit var saveButton: Button
+    private lateinit var notesList: App
+    private var noteId: String? = null
+    private lateinit var tempTitle: String
+    private lateinit var tempDetail: String
 
-import com.example.projectthree.R;
-import com.example.projectthree.domain.App;
-import com.example.projectthree.domain.NoteEntity;
-
-public class NotesEditFragment extends Fragment {
-    private static final String ID_KEY = "ID_KEY";
-    private EditText titleEditText;
-    private EditText detailEditText;
-    private Button saveButton;
-    private App notesList;
-    private String noteId;
-    private String tempTitle;
-    private String tempDetail;
-
-    public static NotesEditFragment create(String id) {
-        NotesEditFragment fragment = new NotesEditFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(ID_KEY, id);
-        fragment.setArguments(bundle);
-        return fragment;
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_notes_edit, container, false)
     }
 
-    public static NotesEditFragment create() {
-        return new NotesEditFragment();
-    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        tempTitle = ""
+        tempDetail = ""
+        titleEditText = view.findViewById(R.id.title_edit_text)
+        detailEditText = view.findViewById(R.id.detail_edit_text)
+        saveButton = view.findViewById(R.id.save_button)
+        notesList = requireActivity().applicationContext as App
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_notes_edit, container, false);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        tempTitle = "";
-        tempDetail = "";
-        titleEditText = view.findViewById(R.id.title_edit_text);
-        detailEditText = view.findViewById(R.id.detail_edit_text);
-        saveButton = view.findViewById(R.id.save_button);
-        notesList = (App) requireActivity().getApplicationContext();
-
-        Bundle args = getArguments();
+        val args = this.arguments
         if (args != null && args.containsKey(ID_KEY)) {
-            noteId = args.getString(ID_KEY);
-            fillTextTitleAndTextDetail(notesList.getNote(noteId));
+            noteId = args.getString(ID_KEY)
+            fillTextTitleAndTextDetail(notesList.getNote(noteId))
         }
-        setupListeners();
+        setupListeners()
     }
 
-    private void fillTextTitleAndTextDetail(NoteEntity note) {
-        titleEditText.setText(note.getTitle());
-        detailEditText.setText(note.getDetail());
+    private fun fillTextTitleAndTextDetail(note: NoteEntity) {
+        titleEditText.setText(note.title)
+        detailEditText.setText(note.detail)
+        tempTitle = note.title
+        tempDetail = note.detail
     }
 
-    @SuppressLint("ResourceAsColor")
-    private void setupListeners() {
+    private fun setupListeners() {
+        setHints()
 
-        setHints();
-
-        titleEditText.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {
+        titleEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                tempTitle = titleEditText.text.toString()
             }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        })
+        detailEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                tempDetail = detailEditText.text.toString()
             }
+        })
 
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                tempTitle = titleEditText.getText().toString();
-            }
-        });
+        saveButton.setOnClickListener { v: View? ->
+            var isModifiedDate = true
 
-        detailEditText.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                tempDetail = detailEditText.getText().toString();
-            }
-        });
-
-        saveButton.setOnClickListener(v -> {
             if (noteId == null) {
-                createNote();
-            }
-            if (tempTitle.length() != 0) {
-                notesList.getNote(noteId).setTitle(tempTitle);
-            }
-            if (tempDetail.length() != 0) {
-                notesList.getNote(noteId).setDetail(tempDetail);
+                createNote()
+                isModifiedDate = false
             }
 
-            if (!tempTitle.equals(notesList.getNote(noteId).getTitle()) || !tempDetail.equals(notesList.getNote(noteId).getDetail())) {
-                notesList.getNote(noteId).setModifiedDate();
+            if(isModifiedDate) {
+                if (!tempTitle.equals(notesList.getNote(noteId).title) || !tempDetail.equals(
+                        notesList.getNote(noteId).detail)) {
+                    notesList.getNote(noteId).setModifiedDate()
+                }
             }
 
-            if (titleEditText.length() == 0 && detailEditText.length() != 0) {
-                notesList.getNote(noteId).setTitle(detailEditText.getText().toString().substring(0, 10));
-            } else if (isNoteBlank()) {
-                notesList.removeNote(notesList.getNote(noteId));
+            if (tempTitle.isNotEmpty()) {
+                notesList.getNote(noteId).title = tempTitle
             }
-            requireActivity().onBackPressed();
-        });
-    }
+            if (tempDetail.isNotEmpty()) {
+                notesList.getNote(noteId).detail = tempDetail
+            }
 
-    private void createNote() {
-        NoteEntity newNote = new NoteEntity();
-        notesList.addNote(newNote);
-        noteId = newNote.getId();
-    }
+            if (titleEditText.length().equals(0) && !detailEditText.length().equals(0)) {
+                notesList.getNote(noteId).title =
+                    detailEditText.text.toString().substring(0, 10)
+            } else if (isNoteBlank) {
+                notesList.removeNote(notesList.getNote(noteId))
+            }
 
-    public boolean isNoteBlank() {
-        return titleEditText.length() == 0 && detailEditText.length() == 0;
-    }
-
-    public void setHints() {
-        if (titleEditText.getText().toString().length() == 0) {
-            titleEditText.setHint("Заголовок");
-        }
-        if (detailEditText.getText().toString().length() == 0) {
-            detailEditText.setHint("текст заметки");
+            requireActivity().onBackPressed()
         }
     }
 
+    private fun createNote() {
+        val newNote = NoteEntity()
+        notesList.addNote(newNote)
+        noteId = newNote.id
+    }
+
+    val isNoteBlank: Boolean
+        get() = titleEditText.length().equals(0) && detailEditText.length().equals(0)
+
+    fun setHints() {
+        if (titleEditText.text.toString().isEmpty()) {
+            titleEditText.hint = "Заголовок"
+        }
+        if (detailEditText.text.toString().isEmpty()) {
+            detailEditText.hint = "текст заметки"
+        }
+    }
+
+    companion object {
+        private val ID_KEY = "ID_KEY"
+        fun create(id: String?): NotesEditFragment {
+            val fragment = NotesEditFragment()
+            val bundle = Bundle().apply { putString(ID_KEY, id) }
+            bundle.also { fragment.arguments = it }
+            return fragment
+        }
+
+        fun create(): NotesEditFragment {
+            return NotesEditFragment()
+        }
+    }
 }

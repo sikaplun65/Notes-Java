@@ -13,7 +13,7 @@ public class App extends Application{
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void onCreate() {
         super.onCreate();
-        notesList = NotesListImpl.getInstance();
+        notesList = NotesListImpl.INSTANCE.getNotesList();
     }
 
     public List<NoteEntity> getNotes() {

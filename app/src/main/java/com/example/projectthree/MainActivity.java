@@ -86,12 +86,12 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
 
     @Override
     public void startNotesEditFragment(String id) {
-        addFragment(NotesEditFragment.create(id));
+        addFragment(NotesEditFragment.Companion.create(id));
     }
 
     @Override
     public void startNotesCreateFragment() {
-        addFragment(NotesEditFragment.create());
+        addFragment(NotesEditFragment.Companion.create());
     }
 
 }

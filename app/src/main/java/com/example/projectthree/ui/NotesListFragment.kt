@@ -1,157 +1,124 @@
-package com.example.projectthree.ui;
+package com.example.projectthree.ui
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
+import com.example.projectthree.ui.NoteAdapter.InteractionListener
+import com.example.projectthree.domain.NoteEntity
+import androidx.recyclerview.widget.RecyclerView
+import com.example.projectthree.ui.NoteAdapter
+import com.example.projectthree.domain.App
+import android.os.Bundle
+import com.example.projectthree.R
+import androidx.annotation.RequiresApi
+import android.os.Build
+import android.view.ContextMenu.ContextMenuInfo
+import android.annotation.SuppressLint
+import android.content.Context
+import android.widget.Toast
+import android.content.DialogInterface
+import android.view.*
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
+import androidx.recyclerview.widget.LinearLayoutManager
+import java.lang.IllegalStateException
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+class NotesListFragment : Fragment(), InteractionListener {
+    private var controller: Controller? = null
+    private lateinit var selectedNotesItem: NoteEntity
+    private var id: String? = null
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: NoteAdapter
+    private lateinit var notesList: App
 
-import com.example.projectthree.R;
-import com.example.projectthree.domain.App;
-import com.example.projectthree.domain.NoteEntity;
-import com.example.projectthree.ui.NoteAdapter;
-import com.google.android.material.snackbar.Snackbar;
-
-public class NotesListFragment extends Fragment implements NoteAdapter.InteractionListener {
-    private Controller controller;
-    private NoteEntity selectedNotesItem;
-    private String id;
-    private RecyclerView recyclerView;
-    private NoteAdapter adapter;
-    private App notesList;
-
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        if (context instanceof Controller) {
-            controller = (Controller) context;
-        } else {
-            throw new IllegalStateException("must implement NotesListFragment.Controller");
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        controller = if (context is Controller) context else {
+            throw IllegalStateException("must implement NotesListFragment.Controller")
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_notes_list, container, false);
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_notes_list, container, false)
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        notesList = (App) requireActivity().getApplicationContext();
-        adapter = new NoteAdapter(notesList.getNotes(), this);
-
-        initializationAddNewNoteButton(view);
-        initializationRecyclerView(view);
-
-        registerForContextMenu(recyclerView);
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        notesList = requireActivity().applicationContext as App
+        adapter = NoteAdapter(notesList.notes, this)
+        initializationAddNewNoteButton(view)
+        initializationRecyclerView(view)
+        registerForContextMenu(recyclerView)
     }
 
-    @Override
-    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater inflater = getActivity().getMenuInflater();
-        inflater.inflate(R.menu.note_context_menu, menu);
+    override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenuInfo?) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        val inflater = requireActivity().menuInflater
+        inflater.inflate(R.menu.note_context_menu, menu)
     }
 
-    @SuppressLint({"NonConstantResourceId", "NotifyDataSetChanged"})
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_delete_note:
-                deleteNoteAlertDialog();
-                break;
-            case R.id.menu_edit_note:
-                onItemClick(selectedNotesItem);
-                break;
-            case R.id.menu_share_note:
-                Toast.makeText(getActivity(), "Пункт меню в разработке", Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                break;
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_delete_note -> deleteNoteAlertDialog()
+            R.id.menu_edit_note -> onItemClick(selectedNotesItem)
+            R.id.menu_share_note -> Toast.makeText(activity, "Пункт меню в разработке", Toast.LENGTH_SHORT).show()
         }
-        return super.onContextItemSelected(item);
+        return super.onContextItemSelected(item)
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private void deleteNoteAlertDialog() {
-        new AlertDialog.Builder(requireContext())
-                .setMessage(R.string.text_message_alert_dialog_delete_note)
-                .setCancelable(false)
-                .setPositiveButton(R.string.text_yes, (dialog, id) -> {
-                    notesList.removeNote(selectedNotesItem);
-                    adapter.notifyDataSetChanged();
-                    Snackbar.make(getView(), "Заметка \"" + selectedNotesItem.getTitle() + "\" удалена", Snackbar.LENGTH_LONG).show();
-                })
-                .setNegativeButton(R.string.text_no, null)
-                .show();
+    private fun deleteNoteAlertDialog() {
+        AlertDialog.Builder(requireContext())
+            .setMessage(R.string.text_message_alert_dialog_delete_note)
+            .setCancelable(false)
+            .setPositiveButton(R.string.text_yes) { dialog: DialogInterface?, id: Int ->
+                notesList.removeNote(selectedNotesItem)
+                adapter.notifyDataSetChanged()
+                Snackbar.make(requireView(), "Заметка \"" + selectedNotesItem.title + "\" удалена", Snackbar.LENGTH_LONG).show()
+            }
+            .setNegativeButton(R.string.text_no, null)
+            .show()
     }
 
-
-    private void initializationAddNewNoteButton(View view) {
-        view.findViewById(R.id.new_note_button).setOnClickListener(v -> {
-            controller.startNotesCreateFragment();
-        });
+    private fun initializationAddNewNoteButton(view: View) {
+        view.findViewById<View>(R.id.new_note_button)
+            .setOnClickListener { v: View? -> controller?.startNotesCreateFragment() }
     }
 
-    private void initializationRecyclerView(View view) {
-        recyclerView = view.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        recyclerView.setAdapter(adapter);
-        adapter.setData(notesList.getNotes());
-        adapter.setOnItemClickListener(new NoteAdapter.InteractionListener() {
-            @Override
-            public void OnItemShortClick(NoteEntity item) {
-                onItemClick(item);
+    private fun initializationRecyclerView(view: View) {
+        recyclerView = view.findViewById(R.id.recycler_view)
+        recyclerView.setLayoutManager(LinearLayoutManager(view.context))
+        recyclerView.setAdapter(adapter)
+        adapter.setData(notesList.notes)
+        adapter.setOnItemClickListener(object : InteractionListener {
+            override fun OnItemShortClick(item: NoteEntity) {
+                onItemClick(item)
             }
 
-            @Override
-            public boolean OnItemLongClick(NoteEntity item) {
-                selectedNotesItem = item;
-                return false;
+            override fun OnItemLongClick(item: NoteEntity): Boolean {
+                selectedNotesItem = item
+                return false
             }
-        });
+        })
     }
 
-    private void onItemClick(NoteEntity note) {
-        id = note.getId();
-        controller.startNotesEditFragment(id);
+    private fun onItemClick(note: NoteEntity?) {
+        id = note?.id
+        controller?.startNotesEditFragment(id)
     }
 
-    @Override
-    public void onDestroy() {
-        controller = null;
-        super.onDestroy();
+    override fun onDestroy() {
+        controller = null
+        super.onDestroy()
     }
 
-    @Override
-    public void OnItemShortClick(NoteEntity item) {
-    }
+    override fun OnItemShortClick(item: NoteEntity) {}
+    override fun OnItemLongClick(item: NoteEntity): Boolean = false
 
-    @Override
-    public boolean OnItemLongClick(NoteEntity item) {
-        return false;
-    }
-
-    public interface Controller {
-        void startNotesCreateFragment();
-
-        void startNotesEditFragment(String id);
+    interface Controller {
+        fun startNotesCreateFragment()
+        fun startNotesEditFragment(id: String?)
     }
 }
